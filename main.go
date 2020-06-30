@@ -31,14 +31,11 @@ func main() {
 	tree := covertree.NewInMemoryTree(basis, rootDistance, distance.Levenshtein)
 
 	fmt.Printf("\nIndexing phase.\n\n")
-	for _, w := range words {
-		x := w // copy is required
-		err := tree.Insert(&x)
-		if err != nil {
-			fmt.Printf("Error inserting '%s': %v\n", w.String(), err)
-		}
-		fmt.Printf("Inserted '%+v'\n", &w)
+	inserted, err := index(tree, words)
+	if err != nil {
+		fmt.Printf("Error while indexing: %v\n", err)
 	}
+	fmt.Printf("Inserted %d words\n", inserted)
 
 	fmt.Printf("\nQuerying phase.\n\n")
 	w := corpus.NewWord("hello")

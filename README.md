@@ -16,5 +16,5 @@ Understsand the most basic use of [go-covertree][gct] and [golang-levenshtein][g
 ### Usage
 
 ```sh
-go run main.go
+go run github.com/gonzalo-bulnes/cover
 ```
