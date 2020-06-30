@@ -28,7 +28,7 @@ var words = corpus.New(
 )
 
 func main() {
-	tree := covertree.NewInMemoryTree(basis, rootDistance, distance.Levenshtein)
+	tree := covertree.NewInMemoryTree(basis, rootDistance, distance.ForErrorCorrection)
 
 	fmt.Printf("\nIndexing phase.\n\n")
 	inserted, err := index(tree, words)
@@ -39,7 +39,7 @@ func main() {
 
 	fmt.Printf("\nQuerying phase.\n\n")
 	w := corpus.NewWord("hello")
-	fmt.Printf("Finding the %d nearest words that are closer than %f from '%s'\n", maxResults, maxDistance, w)
+	fmt.Printf("Finding the %d nearest words that are closer than %f from '%s'\n", maxResults, distance.MaxEditDistanceForErrorCorrection(3), w)
 	results, err := tree.FindNearest(&w, maxResults, maxDistance)
 	if err != nil {
 		fmt.Printf("Error finding nearest to '%s': %v\n", w, err)
