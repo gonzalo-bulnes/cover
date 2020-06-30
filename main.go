@@ -2,73 +2,36 @@ package main
 
 import (
 	"fmt"
-	"math"
 
+	"github.com/gonzalo-bulnes/cover/corpus"
+	"github.com/gonzalo-bulnes/cover/distance"
 	"github.com/mandykoh/go-covertree"
-	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
 const (
-	Basis        = 10.0
-	RootDistance = 3.0
+	// basis is the logarithmic base for determining the coverage of nodes at each level of the tree.
+	basis = 10.0
+	// rootDistance is the minimum expected distance between root nodes. New nodes that exceed this distance will be created as additional roots.
+	rootDistance = 3.0
+	// maxDistance is the maximum distnce acceptable in a result set.
+	maxDistance = 6.0
+	// maxResults is the maximum number of results acceptable in a result set.
+	maxResults = 30
 )
 
-var corpus = []Word{
-	{string: "hello"},
-	{string: "hullo"},
-	{string: "allo?"},
-	{string: "muelle"},
-	{string: "anaconda"},
-}
-
-type Point struct {
-	X float64
-	Y float64
-}
-
-type Word struct {
-	string
-}
-
-func (w *Word) String() string {
-	return w.string
-}
-
-func New(w string) *Word {
-	return &Word{
-		string: w,
-	}
-}
-
-func euclidianDistance(a, b interface{}) float64 {
-	p1 := a.(*Point)
-	p2 := b.(*Point)
-
-	distX := p1.X - p2.X
-	distY := p1.Y - p2.Y
-	fmt.Printf("Distance between '%v' and '%v'\n", p1, p2)
-
-	return math.Sqrt(distX*distX + distY*distY)
-}
-
-func levenshteinDistance(a, b interface{}) float64 {
-	w1 := a.(*Word)
-	w2 := b.(*Word)
-
-	s1 := w1.String()
-	s2 := w2.String()
-
-	distance := levenshtein.DistanceForStrings([]rune(s1), []rune(s2), levenshtein.DefaultOptionsWithSub)
-	fmt.Printf("Distance between '%s' and '%s' computed as %f\n", s1, s2, float64(distance))
-
-	return float64(distance)
-}
+var words = corpus.New(
+	"hello",
+	"hullo",
+	"allo?",
+	"muelle",
+	"anaconda",
+)
 
 func main() {
-	tree := covertree.NewInMemoryTree(Basis, RootDistance, levenshteinDistance)
+	tree := covertree.NewInMemoryTree(basis, rootDistance, distance.Levenshtein)
 
 	fmt.Printf("\nIndexing phase.\n\n")
-	for _, w := range corpus {
+	for _, w := range words {
 		x := w // copy is required
 		err := tree.Insert(&x)
 		if err != nil {
@@ -78,11 +41,9 @@ func main() {
 	}
 
 	fmt.Printf("\nQuerying phase.\n\n")
-	w := Word{string: "hello"}
-	n := 30
-	maxDistance := 6.0
-	fmt.Printf("Finding the %d nearest words that are closer than %f from '%s'\n", n, maxDistance, w)
-	results, err := tree.FindNearest(&w, n, maxDistance)
+	w := corpus.NewWord("hello")
+	fmt.Printf("Finding the %d nearest words that are closer than %f from '%s'\n", maxResults, maxDistance, w)
+	results, err := tree.FindNearest(&w, maxResults, maxDistance)
 	if err != nil {
 		fmt.Printf("Error finding nearest to '%s': %v\n", w, err)
 	}
