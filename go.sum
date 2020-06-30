@@ -1,0 +1,4 @@
+github.com/mandykoh/go-covertree v1.10.10 h1:Yis7VrYGEOHiV1jEtUuz38u6vNmwx7q1BHr4XhWUXpE=
+github.com/mandykoh/go-covertree v1.10.10/go.mod h1:F8czFMXy8AUErpXy8yz2MmbGmkXOON6FM4rJ9MNaFvg=
+github.com/texttheater/golang-levenshtein v0.0.0-20191208221605-eb6844b05fc6 h1:9VTskZOIRf2vKF3UL8TuWElry5pgUpV1tFSe/e/0m/E=
+github.com/texttheater/golang-levenshtein v0.0.0-20191208221605-eb6844b05fc6/go.mod h1:XDKHRm5ThF8YJjx001LtgelzsoaEcvnA7lVWz9EeX3g=
