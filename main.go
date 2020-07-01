@@ -31,7 +31,7 @@ func main() {
 	tree := covertree.NewInMemoryTree(basis, rootDistance, distance.ForErrorCorrection)
 
 	fmt.Printf("\nIndexing phase.\n\n")
-	inserted, err := index(tree, words)
+	inserted, err := index(tree, words...)
 	if err != nil {
 		fmt.Printf("Error while indexing: %v\n", err)
 	}
