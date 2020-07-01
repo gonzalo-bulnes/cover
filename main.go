@@ -6,6 +6,7 @@ import (
 
 	"github.com/gonzalo-bulnes/cover/corpus"
 	"github.com/gonzalo-bulnes/cover/distance"
+	"github.com/gonzalo-bulnes/cover/file"
 	"github.com/mandykoh/go-covertree"
 )
 
@@ -20,17 +21,14 @@ const (
 	maxResults = 30
 )
 
-var words = corpus.New(
-	"hello",
-	"hullo",
-	"allo?",
-	"muelle",
-	"anaconda",
-)
-
 var print = os.Getenv("PRINT") != ""
 
 func main() {
+	words, err := file.NewCorpus()
+	if err != nil {
+		fmt.Printf("Error when importing file: %v", err)
+	}
+
 	tree := covertree.NewInMemoryTree(basis, rootDistance, distance.ForErrorCorrection)
 
 	if print {

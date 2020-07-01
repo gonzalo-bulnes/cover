@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/gonzalo-bulnes/cover/corpus"
 	"github.com/gonzalo-bulnes/cover/distance"
+	"github.com/gonzalo-bulnes/cover/file"
 	"github.com/mandykoh/go-covertree"
 )
 
@@ -18,15 +20,12 @@ var w = corpus.New(
 
 func TestIndex(t *testing.T) {
 
-	t.Run("known values", func(t *testing.T) {
-		var words = corpus.New(
-			"hello",
-			"hullo",
-			"allo?",
-			"muelle",
-			"anaconda",
-		)
+	words, err := file.NewCorpus()
+	if err != nil {
+		fmt.Printf("Error when importing file: %v", err)
+	}
 
+	t.Run("known values", func(t *testing.T) {
 		tree := covertree.NewInMemoryTree(10.0, 3.0, distance.Levenshtein)
 
 		inserted, err := index(tree, w...)
