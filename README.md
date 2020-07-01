@@ -36,7 +36,7 @@ Understand if the cover tree can be used to pre-select groups of words that have
 ### Usage
 
 ```sh
-go run github.com/gonzalo-bulnes/cover
+PRINT=true go run github.com/gonzalo-bulnes/cover
 ```
 
 ### Scratchpad

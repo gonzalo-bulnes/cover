@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/gonzalo-bulnes/cover/corpus"
 	"github.com/gonzalo-bulnes/cover/distance"
@@ -27,23 +28,35 @@ var words = corpus.New(
 	"anaconda",
 )
 
+var print = os.Getenv("PRINT") != ""
+
 func main() {
 	tree := covertree.NewInMemoryTree(basis, rootDistance, distance.ForErrorCorrection)
 
-	fmt.Printf("\nIndexing phase.\n\n")
+	if print {
+		fmt.Printf("\nIndexing phase.\n\n")
+	}
 	inserted, err := index(tree, words...)
 	if err != nil {
 		fmt.Printf("Error while indexing: %v\n", err)
 	}
-	fmt.Printf("Inserted %d words\n", inserted)
+	if print {
+		fmt.Printf("Inserted %d words\n", inserted)
+	}
 
-	fmt.Printf("\nQuerying phase.\n\n")
+	if print {
+		fmt.Printf("\nQuerying phase.\n\n")
+	}
 	w := corpus.NewWord("hello")
-	fmt.Printf("Finding the %d nearest words that are closer than %f from '%s'\n", maxResults, distance.MaxEditDistanceForErrorCorrection(3), w)
+	if print {
+		fmt.Printf("Finding the %d nearest words that are closer than %f from '%s'\n", maxResults, distance.MaxEditDistanceForErrorCorrection(3), w)
+	}
 	results, err := tree.FindNearest(&w, maxResults, maxDistance)
 	if err != nil {
 		fmt.Printf("Error finding nearest to '%s': %v\n", w, err)
 	}
 
-	fmt.Printf("Results %+v\n", results)
+	if print {
+		fmt.Printf("Results %+v\n", results)
+	}
 }
