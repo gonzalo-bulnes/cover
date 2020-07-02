@@ -6,12 +6,14 @@ import (
 	"github.com/gonzalo-bulnes/cover/corpus"
 )
 
+var epsilon = 0.000001
+
 func TestDistanceForErrorCorrection(t *testing.T) {
 
 	t.Run("does no explode when words are identical", func(t *testing.T) {
 		w := corpus.NewWord("hello")
 
-		if affinity := ForErrorCorrection(&w, &w); affinity < 1.0 {
+		if affinity := ForErrorCorrection(&w, &w); (1.0 - affinity) > epsilon {
 			t.Errorf("Expected affinity to always be inferior to 1.0, got %f", affinity)
 		}
 	})
