@@ -13,12 +13,12 @@ import (
 const (
 	// basis is the logarithmic base for determining the coverage of nodes at each level of the tree.
 	basis = 10.0
-	// rootDistance is the minimum expected distance between root nodes. New nodes that exceed this distance will be created as additional roots.
-	rootDistance = 3.0
-	// maxDistance is the maximum distnce acceptable in a result set.
+	// maxDistance is the maximum distance acceptable in a result set.
 	maxDistance = 6.0
+	// rootDistance is the minimum expected distance between root nodes. New nodes that exceed this distance will be created as additional roots.
+	rootDistance = maxDistance
 	// maxResults is the maximum number of results acceptable in a result set.
-	maxResults = 30
+	maxResults = 100000
 )
 
 var print = os.Getenv("PRINT") != ""
