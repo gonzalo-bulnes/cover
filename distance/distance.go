@@ -12,6 +12,8 @@ import (
 
 var print = os.Getenv("PRINT") != ""
 
+const Max = 100.0
+
 // Distance returns a distance between two words, suitable to compose wordlists
 // for memorable passphrases.
 //
@@ -30,13 +32,13 @@ var Distance covertree.DistanceFunc = func(a, b interface{}) float64 {
 		if print {
 			fmt.Printf("Rejecting – insuficient edit distance '%s' '%s'\n", s1, s2)
 		}
-		distance = 100.0
+		distance = Max
 	}
 	if strings.HasPrefix(s1, s2) || strings.HasPrefix(s2, s1) {
 		if print {
 			fmt.Printf("Rejecting – exact prefix '%s' '%s'\n", s1, s2)
 		}
-		distance = 100.0
+		distance = Max
 	}
 	if print {
 		fmt.Printf("Distance between '%s' and '%s' computed as %f\n", s1, s2, float64(distance))

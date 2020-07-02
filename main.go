@@ -12,13 +12,13 @@ import (
 
 const (
 	// basis is the logarithmic base for determining the coverage of nodes at each level of the tree.
-	basis = 10.0
+	basis = distance.Max
 	// maxDistance is the maximum distance acceptable in a result set.
-	maxDistance = 6.0
+	maxDistance = 7.0
 	// rootDistance is the minimum expected distance between root nodes. New nodes that exceed this distance will be created as additional roots.
 	rootDistance = maxDistance
 	// maxResults is the maximum number of results acceptable in a result set.
-	maxResults = 100000
+	maxResults = 10000
 )
 
 var print = os.Getenv("PRINT") != ""
@@ -45,7 +45,7 @@ func main() {
 	if print {
 		fmt.Printf("\nQuerying phase.\n\n")
 	}
-	w := corpus.NewWord("hello")
+	w := corpus.NewWord("hall")
 	if print {
 		fmt.Printf("Finding the %d nearest words that are closer than %f from '%s'\n", maxResults, maxDistance, w)
 	}
