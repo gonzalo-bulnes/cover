@@ -2,14 +2,11 @@ package distance
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/gonzalo-bulnes/cover/corpus"
 	"github.com/mandykoh/go-covertree"
 	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
-
-var print = os.Getenv("PRINT") != ""
 
 // Levenshtein returns the edit distance between two words.
 var Levenshtein covertree.DistanceFunc = func(a, b interface{}) float64 {

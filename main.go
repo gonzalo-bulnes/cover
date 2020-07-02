@@ -29,7 +29,7 @@ func main() {
 		fmt.Printf("Error when importing file: %v", err)
 	}
 
-	tree := covertree.NewInMemoryTree(basis, rootDistance, distance.ForErrorCorrection)
+	tree := covertree.NewInMemoryTree(basis, rootDistance, distance.Distance)
 
 	if print {
 		fmt.Printf("\nIndexing phase.\n\n")
@@ -47,7 +47,7 @@ func main() {
 	}
 	w := corpus.NewWord("hello")
 	if print {
-		fmt.Printf("Finding the %d nearest words that are closer than %f from '%s'\n", maxResults, distance.MaxEditDistanceForErrorCorrection(3), w)
+		fmt.Printf("Finding the %d nearest words that are closer than %f from '%s'\n", maxResults, maxDistance, w)
 	}
 	results, err := tree.FindNearest(&w, maxResults, maxDistance)
 	if err != nil {
