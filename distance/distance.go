@@ -30,13 +30,19 @@ var Distance covertree.DistanceFunc = func(a, b interface{}) float64 {
 	distance := levenshtein.DistanceForStrings([]rune(s1), []rune(s2), levenshtein.DefaultOptionsWithSub)
 	if distance < 3 {
 		if print {
-			fmt.Printf("Rejecting – insuficient edit distance '%s' '%s'\n", s1, s2)
+			fmt.Printf("Rejecting – insufficient edit distance '%s' '%s'\n", s1, s2)
 		}
 		distance = Max
 	}
 	if strings.HasPrefix(s1, s2) || strings.HasPrefix(s2, s1) {
 		if print {
 			fmt.Printf("Rejecting – exact prefix '%s' '%s'\n", s1, s2)
+		}
+		distance = Max
+	}
+	if strings.HasPrefix(s1, s2[:3]) {
+		if print {
+			fmt.Printf("Rejecting – same first three letters '%s' '%s'\n", s1, s2)
 		}
 		distance = Max
 	}

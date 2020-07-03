@@ -39,12 +39,18 @@ func TestDistance(t *testing.T) {
 			b:        corpus.NewWord("coro"),
 			expected: 100,
 		},
+		{
+			message:  "a and b start by the same three letters",
+			a:        corpus.NewWord("deslinde"),
+			b:        corpus.NewWord("desayuno"),
+			expected: 100,
+		},
 	}
 
 	for _, tc := range testcases {
 		t.Run(tc.message, func(t *testing.T) {
 			if distance := Distance(&tc.a, &tc.b); math.Abs(distance-tc.expected) > epsilon {
-				t.Error(tc.message)
+				t.Errorf("%s: expected %f, got %f", tc.message, tc.expected, distance)
 			}
 		})
 	}
