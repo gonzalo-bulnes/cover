@@ -100,3 +100,19 @@ Idea: the quality of the corpus will matter, because the cover trees are not goi
 Find a [zoomable version of the whiteboard on Excalidraw.com](https://excalidraw.com/#json=5174719347163136,4eLjzfSmumg7AgVgqoVPHw).
 
 ![Whiteboard description of the idea of using two cover trees to compose potential wordlists.](./doc/a-tale-of-two-trees.png)
+
+### Usage
+
+```sh
+# MIN_DISTANCE: minimum edit distance between any two words
+# MAX_DISTANCE: maximum edit distance between any two words
+# CORPUS_PATH: path of the corpus file
+# NO_PREFIX: ensure that no word is an exact prefix of another
+# NO_SAME_FIRST_THREE_LETTERS: ensure that no tow words start with the first three letters
+#
+# This is a very basic configuration system,
+# set options to "" in order to use their default values.
+CORPUS_PATH=file/testdata/corpus.txt MAX_DISTANCE=12 NO_PREFIX=true MIN_DISTANCE=3 NO_SAME_FIRST_THREE_LETTERS="" go run github.com/gonzalo-bulnes/cover
+```
+
+**Observations**: the concept works, remains to see if using cover trees makes performance significantly better. To verify that, a reference implementation is needed. (Also this is likely dependent on some characteristics of the corpus.)
