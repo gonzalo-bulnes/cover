@@ -3,14 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 
-	"github.com/gonzalo-bulnes/cover/corpus"
 	"github.com/gonzalo-bulnes/cover/distance"
 	"github.com/gonzalo-bulnes/cover/file"
 	"github.com/mandykoh/go-covertree"
 )
 
-const (
+var (
 	// basis is the logarithmic base for determining the coverage of nodes at each level of the tree.
 	basis = distance.Max
 	// maxDistance is the maximum distance acceptable in a result set.
@@ -24,6 +24,16 @@ const (
 var print = os.Getenv("PRINT") != ""
 
 func main() {
+
+	if m := os.Getenv("MAX_DISTANCE"); m != "" {
+		f, err := strconv.ParseFloat(m, 64)
+		if err != nil {
+			fmt.Printf("Invalid MAX_DISTANCE %s: %v", m, err)
+		} else {
+			maxDistance = f
+		}
+	}
+
 	words, err := file.NewCorpus()
 	if err != nil {
 		fmt.Printf("Error when importing file: %v", err)
@@ -45,7 +55,12 @@ func main() {
 	if print {
 		fmt.Printf("\nQuerying phase.\n\n")
 	}
-	w := corpus.NewWord("hall")
+
+	if len(words) == 0 {
+		return
+	}
+
+	w := words[0]
 	if print {
 		fmt.Printf("Finding the %d nearest words that are closer than %f from '%s'\n", maxResults, maxDistance, w)
 	}
@@ -57,4 +72,5 @@ func main() {
 	if print {
 		fmt.Printf("Results %+v\n", results)
 	}
+	fmt.Printf("%d results\n", len(results))
 }

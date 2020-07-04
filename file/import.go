@@ -9,7 +9,13 @@ import (
 )
 
 func NewCorpus() (words []corpus.Word, err error) {
-	file, err := os.Open(filepath.Join("file", "testdata", "corpus.txt"))
+
+	path := os.Getenv("CORPUS_PATH")
+	if path == "" {
+		path = filepath.Join("file", "testdata", "corpus.txt")
+	}
+
+	file, err := os.Open(path)
 	if err != nil {
 		return
 	}
