@@ -1,7 +1,28 @@
 Cover
 =====
 
-An exploration of the cover tree structure applied to the composition of wordlists suitable to create memorable passphrases.
+_An exploration of the cover tree structure applied to the composition of wordlists suitable to create memorable passphrases._
+
+<br />
+
+1. [Spike: create a cover tree of words](#spike-create-a-cover-tree-of-words)
+   1. [Goal](#goal)
+   2. [Usage](#usage)
+2. [Spike: proof of concept (edit distance)](#spike-proof-of-concept-edit-distance)
+   1. [Goal](#goal-1)
+   2. [Usage](#usage-1)
+   3. [Scratchpad](#scratchpad)
+3. [Spike: add proof-of-concept distance for wordlists](#spike-add-proof-of-concept-distance-for-wordlists)
+   1. [Goal](#goal-2)
+   2. [Notes](#notes)
+   3. [Whiteboard](#whiteboard)
+   4. [Usage](#usage-2)
+4. [Spike: benchmarks!](#spike-benchmarks)
+   1. [Goal](#goal-3)
+   2. [Results](#results)
+   3. [Conclusions](#conclusions)
+5. [Outcomes & next steps](#outcomes--next-steps)
+   1. [Further thoughts](#further-thoughts)
 
 Spike: create a cover tree of words
 -----------------------------------
