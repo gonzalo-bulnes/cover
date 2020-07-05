@@ -28,7 +28,7 @@ func TestIndex(t *testing.T) {
 	t.Run("known values", func(t *testing.T) {
 		tree := covertree.NewInMemoryTree(10.0, 3.0, distance.Levenshtein)
 
-		inserted, err := index(tree, w...)
+		inserted, err := index(tree, words...)
 		if err != nil {
 			t.Fatalf("Unexpected error when indexing: %v", err)
 		}

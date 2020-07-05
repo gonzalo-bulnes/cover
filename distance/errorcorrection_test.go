@@ -13,7 +13,7 @@ func TestDistanceForErrorCorrection(t *testing.T) {
 	t.Run("does no explode when words are identical", func(t *testing.T) {
 		w := corpus.NewWord("hello")
 
-		if affinity := ForErrorCorrection(&w, &w); (1.0 - affinity) > epsilon {
+		if affinity := ForErrorCorrection(w, w); (1.0 - affinity) > epsilon {
 			t.Errorf("Expected affinity to always be inferior to 1.0, got %f", affinity)
 		}
 	})
@@ -23,11 +23,11 @@ func TestDistanceForErrorCorrection(t *testing.T) {
 		w2 := corpus.NewWord("hallo")
 		w3 := corpus.NewWord("bonjour")
 
-		ed12 := Levenshtein(&w1, &w2)
-		ed13 := Levenshtein(&w1, &w3)
+		ed12 := Levenshtein(w1, w2)
+		ed13 := Levenshtein(w1, w3)
 
-		ec12 := ForErrorCorrection(&w1, &w2)
-		ec13 := ForErrorCorrection(&w1, &w3)
+		ec12 := ForErrorCorrection(w1, w2)
+		ec13 := ForErrorCorrection(w1, w3)
 
 		if ed13 > ed12 && ec13 >= ec12 {
 			t.Error("Expected distance for error corection to decrease as edit distance increased.")

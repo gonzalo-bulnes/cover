@@ -35,8 +35,11 @@ func main() {
 		}
 	}
 
-	// wordlist := usingCoverTrees()
-	wordlist := reference()
+	config := distance.NewConfig()
+
+	// wordlist := usingCoverTree(config, true)
+	// wordlist := usingCoverTree(config, false)
+	wordlist := reference(config)
 
 	n := len(wordlist)
 	fmt.Printf("Any subset of this wordlist conforms to all the constraints, there are %d words to pick from.\n", n)
@@ -48,7 +51,7 @@ func main() {
 	}
 }
 
-func reference() []*corpus.Word {
+func reference(config distance.Config) []*corpus.Word {
 	words, err := file.NewCorpus()
 	if err != nil {
 		fmt.Printf("Error when importing file: %v", err)
@@ -64,7 +67,7 @@ func reference() []*corpus.Word {
 
 		suitable := true
 		for _, word := range wordlist {
-			if distance.Distance(word, candidate) > maxDistance {
+			if distance.DistanceWithOptions(config)(word, candidate) > maxDistance {
 				suitable = false
 				break
 			}
@@ -77,20 +80,29 @@ func reference() []*corpus.Word {
 	return wordlist
 }
 
-func usingCoverTrees() []*corpus.Word {
+func usingCoverTree(config distance.Config, useInputCoverTree bool) []*corpus.Word {
 	words, err := file.NewCorpus()
 	if err != nil {
 		fmt.Printf("Error when importing file: %v", err)
 	}
 
-	// candidates, err := selectCandidates(words)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return nil
-	// }
+	if useInputCoverTree {
+		candidates, err := selectCandidates(config, words)
+		if err != nil {
+			fmt.Println(err)
+			return nil
+		}
 
-	// wordlist, err := selectWords(candidates)
-	wordlist, err := selectWords(words)
+		wordlist, err := selectWords(config, candidates)
+		if err != nil {
+			fmt.Println(err)
+			return nil
+		}
+
+		return wordlist
+	}
+
+	wordlist, err := selectWords(config, words)
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -99,12 +111,12 @@ func usingCoverTrees() []*corpus.Word {
 	return wordlist
 }
 
-func selectCandidates(words []*corpus.Word) ([]*corpus.Word, error) {
+func selectCandidates(config distance.Config, words []*corpus.Word) ([]*corpus.Word, error) {
 	if len(words) == 0 {
 		return words, nil
 	}
 
-	inputTree := covertree.NewInMemoryTree(basis, rootDistance, distance.Distance)
+	inputTree := covertree.NewInMemoryTree(basis, rootDistance, distance.DistanceWithOptions(config))
 
 	_, err := index(inputTree, words...)
 	if err != nil {
@@ -130,12 +142,12 @@ func wordsFrom(query *corpus.Word, results []covertree.ItemWithDistance) []*corp
 	return words
 }
 
-func selectWords(candidates []*corpus.Word) ([]*corpus.Word, error) {
+func selectWords(config distance.Config, candidates []*corpus.Word) ([]*corpus.Word, error) {
 	if len(candidates) == 0 {
 		return candidates, nil
 	}
 
-	outputTree := covertree.NewInMemoryTree(basis, rootDistance, distance.Distance)
+	outputTree := covertree.NewInMemoryTree(basis, rootDistance, distance.DistanceWithOptions(config))
 
 	var n int
 	for _, candidate := range candidates {
