@@ -155,3 +155,12 @@ In these benchmarks, narrowing the corpus using an _input cover tree_ is obvious
 Somewhat for the same reasons, the benchmarks with 1296 and 7776 words are realistic production scenarios, and the reference implementation remains significantly faster (_disappointed sigh_).
 
 I would expect the cover trees to become eventually a better option when the corpus size increases, but clearly that goes out of the scope of creating memorable passphrases.
+
+Outcomes & next steps
+---------------------
+
+The reference implementation is fast enough to be convenient, and being able to pre-compose wordlists quickly seems definitely useful. Making a _useable_ tool out of this last spike seems like it could be useful.
+
+### Further thoughts
+
+Depending on the results of using that tool, it may become interesting to be able to generate series of pre-composed wordlists (the final composition depends on the order in which words were selected) in order to achieve either larger lists (to reach, for example the 7776 words mark) or lists with more specific constraints. For that exercise, using cover trees would have the potential of re-using the indexing time for multiple wordlists and that may prove to bring speed benefits over a reference implementation based on independent loops. _To keep in mind._
