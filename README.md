@@ -116,3 +116,42 @@ CORPUS_PATH=file/testdata/corpus.txt MAX_DISTANCE=12 NO_PREFIX=true MIN_DISTANCE
 ```
 
 **Observations**: the concept works, remains to see if using cover trees makes performance significantly better. To verify that, a reference implementation is needed. (Also this is likely dependent on some characteristics of the corpus.)
+
+Spike: benchmarks!
+------------------
+
+### Goal
+
+Understand how benchmarks are written in Go and whether using cover trees is useful for the purpose of preparing wordlists that are suitable for the creation of memorable passphrases.
+
+### Results
+
+```sh
+go test -bench=.
+
+# /!\ Output truncated for clarity.
+
+# Corpus of 5 words:
+BenchmarkReferenceImplementation-12    	   70285	     17572 ns/op
+BenchmarkTwoCoverTrees-12              	   27267	     44016 ns/op
+BenchmarkSingleCoverTree-12            	   40116	     29963 ns/op
+
+# Corpus of 1296 words (EFF short list 2.0):
+BenchmarkReferenceImplementation-12    	     393	   3116440 ns/op
+BenchmarkTwoCoverTrees-12              	       2	 512458768 ns/op
+BenchmarkSingleCoverTree-12            	      21	  52728567 ns/op
+
+# Corpus of 7776 words (EFF long list):
+BenchmarkReferenceImplementation-12    	      36	  32073703 ns/op
+BenchmarkSingleCoverTree-12    	               3	 433761024 ns/op
+```
+
+### Conclusions
+
+None of the three implementations is likely to be as fast as it could be, that being said, **the reference implementation is significantly _faster_ than the proposals that use cover trees**.
+
+In these benchmarks, narrowing the corpus using an _input cover tree_ is obviously a disadvantage because the corpus is small to start with. However, on second thought, it is unlikely anyone would use a massively oversized corpus because it would necessarily contain increasingly rare words (which are less useful for creating memorable passphrases).
+
+Somewhat for the same reasons, the benchmarks with 1296 and 7776 words are realistic production scenarios, and the reference implementation remains significantly faster (_disappointed sigh_).
+
+I would expect the cover trees to become eventually a better option when the corpus size increases, but clearly that goes out of the scope of creating memorable passphrases.
