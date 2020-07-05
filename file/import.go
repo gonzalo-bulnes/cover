@@ -8,7 +8,7 @@ import (
 	"github.com/gonzalo-bulnes/cover/corpus"
 )
 
-func NewCorpus() (words []corpus.Word, err error) {
+func NewCorpus() (words []*corpus.Word, err error) {
 
 	path := os.Getenv("CORPUS_PATH")
 	if path == "" {

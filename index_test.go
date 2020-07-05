@@ -55,7 +55,7 @@ func benchmarkIndex(_ *covertree.Tree, b *testing.B) {
 func BenchmarkFindNearest(b *testing.B) {
 	tree := covertree.NewInMemoryTree(10.0, 3.0, distance.Levenshtein)
 	word := corpus.NewWord("hello")
-	benchmarkFindNearest(tree, &word, b)
+	benchmarkFindNearest(tree, word, b)
 }
 
 func benchmarkFindNearest(tree *covertree.Tree, word *corpus.Word, b *testing.B) {

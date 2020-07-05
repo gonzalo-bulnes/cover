@@ -10,8 +10,8 @@ func (w *Word) String() string {
 }
 
 // New returns a new word.
-func NewWord(w string) Word {
-	return Word{
+func NewWord(w string) *Word {
+	return &Word{
 		string: w,
 	}
 }

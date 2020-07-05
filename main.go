@@ -35,100 +35,129 @@ func main() {
 		}
 	}
 
+	// wordlist := usingCoverTrees()
+	wordlist := reference()
+
+	n := len(wordlist)
+	fmt.Printf("Any subset of this wordlist conforms to all the constraints, there are %d words to pick from.\n", n)
+	if n >= 1296 {
+		fmt.Println("There are enough words to compose a short list for use with 4 dice.")
+	}
+	if n >= 7776 {
+		fmt.Println("There are enough words to compose a long list for use with 5 dice.")
+	}
+}
+
+func reference() []*corpus.Word {
 	words, err := file.NewCorpus()
 	if err != nil {
 		fmt.Printf("Error when importing file: %v", err)
 	}
 
+	wordlist := []*corpus.Word{}
+	for i, candidate := range words {
+
+		if i == 0 {
+			wordlist = append(wordlist, candidate)
+			continue
+		}
+
+		suitable := true
+		for _, word := range wordlist {
+			if distance.Distance(word, candidate) > maxDistance {
+				suitable = false
+				break
+			}
+		}
+		if suitable {
+			wordlist = append(wordlist, candidate)
+		}
+	}
+
+	return wordlist
+}
+
+func usingCoverTrees() []*corpus.Word {
+	words, err := file.NewCorpus()
+	if err != nil {
+		fmt.Printf("Error when importing file: %v", err)
+	}
+
+	// candidates, err := selectCandidates(words)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return nil
+	// }
+
+	// wordlist, err := selectWords(candidates)
+	wordlist, err := selectWords(words)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return wordlist
+}
+
+func selectCandidates(words []*corpus.Word) ([]*corpus.Word, error) {
+	if len(words) == 0 {
+		return words, nil
+	}
+
 	inputTree := covertree.NewInMemoryTree(basis, rootDistance, distance.Distance)
 
-	if print {
-		fmt.Printf("\nIndexing phase.\n\n")
-	}
-	inserted, err := index(inputTree, words...)
+	_, err := index(inputTree, words...)
 	if err != nil {
-		fmt.Printf("Error while indexing: %v\n", err)
-	}
-	if print {
-		fmt.Printf("Inserted %d words\n", inserted)
+		return nil, fmt.Errorf("input cover tree: indexing words: %w", err)
 	}
 
-	if len(words) == 0 {
-		return
-	}
-
-	w := words[0]
-	if print {
-		fmt.Printf("Finding the %d nearest words that are closer than %f from '%s'\n", maxResults, maxDistance, w)
-	}
-
-	if print {
-		fmt.Printf("Querying candidates from %s.\n\n", w)
-	}
-
-	candidates, err := inputTree.FindNearest(&w, maxResults, maxDistance)
+	query := words[0]
+	results, err := inputTree.FindNearest(query, maxResults, maxDistance)
 	if err != nil {
-		fmt.Printf("Error finding nearest to '%s': %v\n", w, err)
+		return nil, fmt.Errorf("input cover tree: query '%s': %w", query, err)
 	}
 
-	if print {
-		fmt.Printf("Candidates %+v\n", candidates)
+	return wordsFrom(query, results), nil
+}
+
+func wordsFrom(query *corpus.Word, results []covertree.ItemWithDistance) []*corpus.Word {
+	n := len(results) + 1 // assumes the query is not in the results (exclusive distance function)
+	words := make([]*corpus.Word, n)
+	words[0] = query
+	for i, item := range results {
+		words[i+1] = item.Item.(*corpus.Word)
 	}
-	fmt.Printf("%d candidates\n", len(candidates))
+	return words
+}
+
+func selectWords(candidates []*corpus.Word) ([]*corpus.Word, error) {
+	if len(candidates) == 0 {
+		return candidates, nil
+	}
 
 	outputTree := covertree.NewInMemoryTree(basis, rootDistance, distance.Distance)
 
-	var nSelected int
-
-	// insert the query word
-	inserted, err = index(outputTree, w)
-	if err != nil {
-		fmt.Printf("Error while indexing: %v\n", err)
-	}
-	if inserted != 1 {
-		fmt.Printf("Error while indexing: %s was not inserted\n", w)
-	}
-	nSelected += inserted
-
-	for _, c := range candidates {
-		candidate := c.Item.(*corpus.Word)
+	var n int
+	for _, candidate := range candidates {
 		compatibleWords, err := outputTree.FindNearest(candidate, maxResults, maxDistance)
 		if err != nil {
-			fmt.Printf("Error finding nearest to '%s': %v\n", w, err)
+			return nil, fmt.Errorf("output cover tree: query '%s': %w", candidate, err)
 		}
 
-		if len(compatibleWords) == nSelected {
-			inserted, err := index(outputTree, *candidate)
+		if len(compatibleWords) == n {
+			_, err := index(outputTree, candidate)
 			if err != nil {
-				fmt.Printf("Error while indexing: %v\n", err)
+				return nil, fmt.Errorf("output cover tree: indexing word '%s': %w", *candidate, err)
 			}
-			if inserted != 1 {
-				fmt.Printf("Error while indexing: %s was not inserted\n", candidate)
-			}
-
-			nSelected += inserted
+			n++
 		}
 	}
 
-	if print {
-		fmt.Printf("Querying wordlist from %s.\n\n", w)
-	}
-
-	wordlist, err := outputTree.FindNearest(&w, maxResults, maxDistance)
+	query := candidates[0]
+	results, err := outputTree.FindNearest(query, maxResults, maxDistance)
 	if err != nil {
-		fmt.Printf("Error finding nearest to '%s': %v\n", w, err)
+		return nil, fmt.Errorf("output cover tree: query '%s': %w", query, err)
 	}
 
-	if print {
-		fmt.Printf("Potential wordlist %+v\n", wordlist)
-	}
-	fmt.Printf("%d words\n", nSelected)
-
-	fmt.Printf("Any subset of this wordlist conforms to all the constraints, there are %d words to pick from.\n", nSelected)
-	if nSelected >= 1296 {
-		fmt.Println("There are enough words to compose a short list for use with 4 dice.")
-	}
-	if nSelected >= 7776 {
-		fmt.Println("There are enough words to compose a long list for use with 5 dice.")
-	}
+	return wordsFrom(query, results), nil
 }

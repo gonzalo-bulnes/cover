@@ -11,8 +11,8 @@ func TestDistance(t *testing.T) {
 
 	testcases := []struct {
 		message  string
-		a        corpus.Word
-		b        corpus.Word
+		a        *corpus.Word
+		b        *corpus.Word
 		expected float64
 	}{
 		{
@@ -49,7 +49,7 @@ func TestDistance(t *testing.T) {
 
 	for _, tc := range testcases {
 		t.Run(tc.message, func(t *testing.T) {
-			if distance := Distance(&tc.a, &tc.b); math.Abs(distance-tc.expected) > epsilon {
+			if distance := Distance(tc.a, tc.b); math.Abs(distance-tc.expected) > epsilon {
 				t.Errorf("%s: expected %f, got %f", tc.message, tc.expected, distance)
 			}
 		})
